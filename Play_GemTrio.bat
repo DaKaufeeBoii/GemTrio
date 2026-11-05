@@ -8,7 +8,11 @@ if not exist "gba_bios.bin" (
     )
 )
 
-if exist "..\build\emerald\pokeemerald.gba" (
+if exist "..\pokeemerald.gba" (
+    copy /y "..\pokeemerald.gba" "pokeemerald.gba" >nul
+    copy /y "..\pokeemerald.gba" "gemtrio.gba" >nul
+) else if exist "..\build\emerald\pokeemerald.gba" (
+    copy /y "..\build\emerald\pokeemerald.gba" "pokeemerald.gba" >nul
     copy /y "..\build\emerald\pokeemerald.gba" "gemtrio.gba" >nul
 )
 
