@@ -1,0 +1,14 @@
+{
+  "species": [
+    {
+      "id": 1,
+      "comment": "Bulbasaur sample stat buff",
+      "hp": 48,
+      "attack": 52,
+      "defense": 52,
+      "sp_attack": 68,
+      "sp_defense": 68,
+      "speed": 48
+    }
+  ]
+}
