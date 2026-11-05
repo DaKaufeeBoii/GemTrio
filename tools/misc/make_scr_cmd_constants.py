@@ -13,7 +13,7 @@ def main():
          "{"
     ]
 
-    with open("data/script_cmd_table.inc", "r") as f:
+    with open("data/script_cmd_table.inc", "r", encoding="utf-8", errors="replace") as f:
         ctr = 0
         for line in f.readlines():
             if match := re.search(SCR_CMD_PAT, line):
@@ -22,7 +22,7 @@ def main():
                 ctr += 1
     output.append("};")
     output.append("\n#endif // GUARD_SCR_CMD_CONSTANTS_H\n")
-    with open("include/constants/script_commands.h", "w+") as f:
+    with open("include/constants/script_commands.h", "w+", encoding="utf-8") as f:
         f.write('\n'.join(output))
 
 if __name__ == "__main__":

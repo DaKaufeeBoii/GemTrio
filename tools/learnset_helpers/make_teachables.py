@@ -41,7 +41,7 @@ def enabled() -> bool:
     """
     Check if the user has explicitly enabled this opt-in helper.
     """
-    with open("./include/config/pokemon.h", "r") as cfg_pokemon_fp:
+    with open("./include/config/pokemon.h", "r", encoding="utf-8", errors="replace") as cfg_pokemon_fp:
         cfg_pokemon = cfg_pokemon_fp.read()
         cfg_defined = CONFIG_ENABLED_PAT.search(cfg_pokemon)
         return cfg_defined is not None and cfg_defined.group("cfg_val") in ("TRUE", "1")
@@ -50,7 +50,7 @@ def extract_repo_tms() -> typing.Generator[str, None, None]:
     """
     Yield MOVE constants assigned to a TM or HM in the user's repo.
     """
-    with open("./include/constants/tms_hms.h", "r") as tmshms_fp:
+    with open("./include/constants/tms_hms.h", "r", encoding="utf-8", errors="replace") as tmshms_fp:
         tmshms = tmshms_fp.read()
         match_it = TMHM_MACRO_PAT.finditer(tmshms)
         if not match_it:
@@ -61,7 +61,7 @@ def extract_repo_tms() -> typing.Generator[str, None, None]:
 
 def extract_tm_litteracy_config() -> bool:
     config = False
-    with open("./include/config/pokemon.h", "r") as cfg_pokemon_fp:
+    with open("./include/config/pokemon.h", "r", encoding="utf-8", errors="replace") as cfg_pokemon_fp:
         cfg_pokemon = cfg_pokemon_fp.read()
         cfg_defined = TM_LITERACY_PAT.search(cfg_pokemon)
         if cfg_defined:
@@ -165,7 +165,7 @@ def create_tutor_moves_array(tutors):
 
     lines = [f"    {move}," for move in tutors]
     lines.append("    MOVE_UNAVAILABLE\n};\n")
-    with open("./src/data/tutor_moves.h", "w") as f:
+    with open("./src/data/tutor_moves.h", "w", encoding="utf-8") as f:
         f.write(header + "\n".join(lines))
 
 def make_move_tutors(build_dir, special_movesets):
@@ -174,7 +174,7 @@ def make_move_tutors(build_dir, special_movesets):
     assert SOURCE_TUTORS_JSON.exists(), f"{SOURCE_TUTORS_JSON=} does not exist"
     assert SOURCE_TUTORS_JSON.is_file(), f"{SOURCE_TUTORS_JSON=} is not a file"
 
-    with open(SOURCE_TUTORS_JSON, "r") as fp:
+    with open(SOURCE_TUTORS_JSON, "r", encoding="utf-8", errors="replace") as fp:
         repo_tutors = json.load(fp)
 
     repo_tutors = sorted(list(set(repo_tutors + special_movesets["extraTutors"])))
@@ -200,7 +200,7 @@ def main():
 
     SOURCE_DIR = pathlib.Path(sys.argv[-1])
 
-    with open("src/data/pokemon/special_movesets.json", "r") as file:
+    with open("src/data/pokemon/special_movesets.json", "r", encoding="utf-8", errors="replace") as file:
         special_movesets = json.load(file)
 
     repo_tutors = make_move_tutors(SOURCE_DIR, special_movesets)
@@ -218,7 +218,7 @@ def main():
 
     repo_tms = list(extract_repo_tms())
 
-    with open("./include/config/pokedex_plus_hgss.h", "r") as cfg_pokemon_fp:
+    with open("./include/config/pokedex_plus_hgss.h", "r", encoding="utf-8", errors="replace") as cfg_pokemon_fp:
         cfg_pokemon = cfg_pokemon_fp.read()
         cfg_defined = ALPHABETICAL_ORDER_ENABLED_PAT.search(cfg_pokemon)
         if cfg_defined is None or cfg_defined.group("cfg_val") in ("FALSE", "0"):
@@ -227,14 +227,14 @@ def main():
     h_align = max(map(lambda move: len(move), chain(special_movesets["universalMoves"], repo_tms, repo_tutors))) + 2
     header = prepare_header(h_align, repo_tms, repo_tutors, special_movesets["universalMoves"])
 
-    with open(SOURCE_LEARNSETS_JSON, "r") as source_fp:
+    with open(SOURCE_LEARNSETS_JSON, "r", encoding="utf-8", errors="replace") as source_fp:
         all_learnables = json.load(source_fp)
 
-    with open(SOURCE_TEACHING_TYPES_JSON, "r") as source_fp:
+    with open(SOURCE_TEACHING_TYPES_JSON, "r", encoding="utf-8", errors="replace") as source_fp:
         repo_teaching_types = json.load(source_fp)
 
     content = prepare_output(all_learnables, repo_tms, repo_tutors, special_movesets, repo_teaching_types, header)
-    with open("./src/data/pokemon/teachable_learnsets.h", "w") as teachables_fp:
+    with open("./src/data/pokemon/teachable_learnsets.h", "w", encoding="utf-8") as teachables_fp:
         teachables_fp.write(content)
 
 if __name__ == "__main__":

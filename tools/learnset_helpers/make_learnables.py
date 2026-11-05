@@ -16,7 +16,7 @@ import sys
 
 
 def from_single(fname: pathlib.Path) -> dict[str, set[str]]:
-    with open(fname, "r") as fp:
+    with open(fname, "r", encoding="utf-8", errors="replace") as fp:
         return {
             species: set([level_up["Move"] for level_up in by_method["LevelMoves"]])
             | set([move for move in by_method["TMMoves"]])
@@ -54,7 +54,7 @@ def main():
         species: list(sorted(learnables))
         for species, learnables in from_batch(INPUTS_DIR).items()
     }
-    with open(OUTPUT_FILE, "w") as fp:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as fp:
         json.dump(batch, fp, indent=2)
 
 

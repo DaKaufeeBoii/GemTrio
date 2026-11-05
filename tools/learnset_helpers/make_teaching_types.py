@@ -24,7 +24,7 @@ def enabled() -> bool:
     """
     Check if the user has explicitly enabled this opt-in helper.
     """
-    with open("./include/config/pokemon.h", "r") as cfg_pokemon_fp:
+    with open("./include/config/pokemon.h", "r", encoding="utf-8", errors="replace") as cfg_pokemon_fp:
         cfg_pokemon = cfg_pokemon_fp.read()
         cfg_defined = CONFIG_ENABLED_PAT.search(cfg_pokemon)
         return cfg_defined is not None and cfg_defined.group("cfg_val") in ("TRUE", "1")
@@ -45,7 +45,7 @@ def extract_repo_species_data() -> list:
     file_list = sorted(glob.glob("src/data/pokemon/species_info/*_families.h"))
     file_list.append("./src/data/pokemon/species_info.h")
     for families_fname in file_list:
-        with open(families_fname, "r") as family_fp:
+        with open(families_fname, "r", encoding="utf-8", errors="replace") as family_fp:
             species_lines = family_fp.readlines()
         is_last_line_preprocessor = False
         for line in species_lines:
@@ -89,7 +89,7 @@ def add_whitesspaces(parsed_list) -> list:
 
 
 def dump_output(file, data):
-    with open(file, "w") as fp:
+    with open(file, "w", encoding="utf-8") as fp:
         fp.write(data)
 
 def main():
@@ -110,7 +110,7 @@ def main():
     new_teaching_types = json.dumps(teaching_types_list, indent=2)
     old_teaching_types = ""
     if OUTPUT_FILE.exists() and OUTPUT_FILE.is_file():
-        with open(OUTPUT_FILE, "r") as fp:
+        with open(OUTPUT_FILE, "r", encoding="utf-8", errors="replace") as fp:
             old_teaching_types = fp.read()
 
     dump_output(OUTPUT_FILE, new_teaching_types)

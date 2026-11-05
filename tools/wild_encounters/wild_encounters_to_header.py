@@ -17,7 +17,7 @@ class Config:
         if self.mon_types == None:
             raise Exception("No fields defined in 'wild_encounters.json'")
 
-        with open(config_file_name, 'r') as config_file:
+        with open(config_file_name, 'r', encoding='utf-8', errors='replace') as config_file:
             lines = config_file.readlines()
             for line in lines:
                 self.ParseTimeConfig(line)
@@ -30,7 +30,7 @@ class Config:
             raise Exception("OW_TIME_OF_DAY_FALLBACK not defined.")
     
     def ParseTimeEnum(self, rtc_constants_file_name):
-        with open(rtc_constants_file_name, 'r') as rtc_constants_file:
+        with open(rtc_constants_file_name, 'r', encoding='utf-8', errors='replace') as rtc_constants_file:
             DEFAULT_TIME_PAT = re.compile(r"enum\s+TimeOfDay\s*\{(?P<rtc_val>[\s*\w+,\=\d*]+)\s*\}\s*\;")
             file = rtc_constants_file.read()
 
@@ -260,7 +260,7 @@ class WildEncounterAssembler:
 
 
 def ConvertToHeaderFile(json_data):
-    with open('src/data/wild_encounters.h', 'w') as output_file:
+    with open('src/data/wild_encounters.h', 'w', encoding='utf-8') as output_file:
         config = Config('include/config/overworld.h', 'include/constants/rtc.h', json_data)
         assembler = WildEncounterAssembler(output_file, json_data, config)
         assembler.WriteHeader()
@@ -268,7 +268,7 @@ def ConvertToHeaderFile(json_data):
         assembler.WriteEncounters()
 
 def main():
-    with open('src/data/wild_encounters.json', 'r') as json_file:
+    with open('src/data/wild_encounters.json', 'r', encoding='utf-8', errors='replace') as json_file:
         json_data = json.load(json_file)
         ConvertToHeaderFile(json_data)
         

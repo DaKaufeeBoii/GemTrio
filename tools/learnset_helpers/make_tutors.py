@@ -25,7 +25,7 @@ def enabled() -> bool:
     """
     Check if the user has explicitly enabled this opt-in helper.
     """
-    with open("./include/config/pokemon.h", "r") as cfg_pokemon_fp:
+    with open("./include/config/pokemon.h", "r", encoding="utf-8", errors="replace") as cfg_pokemon_fp:
         cfg_pokemon = cfg_pokemon_fp.read()
         cfg_defined = CONFIG_ENABLED_PAT.search(cfg_pokemon)
         return cfg_defined is not None and cfg_defined.group("cfg_val") in ("TRUE", "1")
@@ -36,7 +36,7 @@ def extract_repo_tutors() -> typing.Generator[str, None, None]:
     foolproof, but it's suitable.
     """
     for inc_fname in chain(glob.glob("./data/scripts/*.inc"), glob.glob("./data/maps/*/scripts.inc")):
-        with open(inc_fname, "r") as inc_fp:
+        with open(inc_fname, "r", encoding="utf-8", errors="replace") as inc_fp:
             incfile = inc_fp.read()
             for move in INCFILE_MOVE_PAT2.finditer(incfile):
                 yield move.group(1)
@@ -48,7 +48,7 @@ def extract_repo_tutors() -> typing.Generator[str, None, None]:
                 yield move.group(1)
 
 def dump_output(file, data):
-    with open(file, "w") as fp:
+    with open(file, "w", encoding="utf-8") as fp:
         fp.write(data)
 
 def main():
@@ -68,7 +68,7 @@ def main():
     new_tutors = json.dumps(tutors_list, indent=2)
     old_tutors = ""
     if OUTPUT_FILE.exists() and OUTPUT_FILE.is_file():
-        with open(OUTPUT_FILE, "r") as fp:
+        with open(OUTPUT_FILE, "r", encoding="utf-8", errors="replace") as fp:
             old_tutors = fp.read()
 
     dump_output(OUTPUT_FILE, new_tutors)
