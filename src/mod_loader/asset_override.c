@@ -55,8 +55,8 @@ void *LoadAsset_Override(char *assetPath)
         void *modData = ReadFileToHeap(entry->overridePath, &size);
         if (modData != NULL)
         {
-            printf("[GemTrio MOD] Overriding asset '%s' with '%s' (%zu bytes)\n",
-                   assetPath, entry->overridePath, size);
+            printf("[GemTrio MOD] Overriding asset '%s' with '%s' (%u bytes)\n",
+                   assetPath, entry->overridePath, (unsigned int)size);
             return modData;
         }
         else
@@ -73,7 +73,7 @@ void *LoadAsset_Override(char *assetPath)
     void *directData = ReadFileToHeap(modDirectPath, &directSize);
     if (directData != NULL)
     {
-        printf("[GemTrio MOD] Direct path override loaded for '%s' (%zu bytes)\n", modDirectPath, directSize);
+        printf("[GemTrio MOD] Direct path override loaded for '%s' (%u bytes)\n", modDirectPath, (unsigned int)directSize);
         return directData;
     }
 

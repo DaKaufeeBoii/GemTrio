@@ -78,7 +78,7 @@ bool GBA_ApplyGameSharkCode(uint32_t gbaAddress, uint32_t value, int byteWidth)
     void *hostPtr = GBA_ToHostAddress(gbaAddress);
     if (!hostPtr)
     {
-        fprintf(stderr, "[GemTrio GS] Failed to translate GBA address 0x%08X to host pointer\n", gbaAddress);
+        fprintf(stderr, "[GemTrio GS] Failed to translate GBA address 0x%08lX to host pointer\n", (unsigned long)gbaAddress);
         return false;
     }
 
@@ -115,14 +115,14 @@ int GBA_LoadCheatsFile(const char *cheatsFilePath)
         if (line[0] == '#' || line[0] == ';' || line[0] == '\r' || line[0] == '\n')
             continue;
 
-        uint32_t addr = 0;
-        uint32_t val = 0;
+        unsigned long addr = 0;
+        unsigned long val = 0;
         int width = 2; // Default 16-bit
 
         // Format: ADDR VALUE [WIDTH]
-        if (sscanf(line, "%x %x %d", &addr, &val, &width) >= 2)
+        if (sscanf(line, "%lx %lx %d", &addr, &val, &width) >= 2)
         {
-            if (GBA_ApplyGameSharkCode(addr, val, width))
+            if (GBA_ApplyGameSharkCode((uint32_t)addr, (uint32_t)val, width))
                 applied++;
         }
     }

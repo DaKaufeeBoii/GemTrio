@@ -74,8 +74,7 @@ static void ScanDirectory(const char *dirPath)
 
         // Extract file extension and asset stem name
         char assetName[GEMTRIO_MAX_PATH];
-        strncpy(assetName, findData.cFileName, sizeof(assetName) - 1);
-        assetName[sizeof(assetName) - 1] = '\0';
+        snprintf(assetName, sizeof(assetName), "%s", findData.cFileName);
 
         char *dot = strrchr(assetName, '.');
         const char *ext = dot ? dot + 1 : "";
@@ -85,8 +84,7 @@ static void ScanDirectory(const char *dirPath)
         entry->assetId = VFS_HashAssetPath(assetName);
         entry->type = GetAssetTypeFromExt(ext);
         entry->isLoaded = false;
-        strncpy(entry->overridePath, fullPath, sizeof(entry->overridePath) - 1);
-        entry->overridePath[sizeof(entry->overridePath) - 1] = '\0';
+        snprintf(entry->overridePath, sizeof(entry->overridePath), "%s", fullPath);
 
         // Calculate file size
         LARGE_INTEGER size;
@@ -118,8 +116,7 @@ static void ScanDirectory(const char *dirPath)
         }
 
         char assetName[GEMTRIO_MAX_PATH];
-        strncpy(assetName, entry->d_name, sizeof(assetName) - 1);
-        assetName[sizeof(assetName) - 1] = '\0';
+        snprintf(assetName, sizeof(assetName), "%s", entry->d_name);
 
         char *dot = strrchr(assetName, '.');
         const char *ext = dot ? dot + 1 : "";
@@ -129,8 +126,7 @@ static void ScanDirectory(const char *dirPath)
         e->assetId = VFS_HashAssetPath(assetName);
         e->type = GetAssetTypeFromExt(ext);
         e->isLoaded = false;
-        strncpy(e->overridePath, fullPath, sizeof(e->overridePath) - 1);
-        e->overridePath[sizeof(e->overridePath) - 1] = '\0';
+        snprintf(e->overridePath, sizeof(e->overridePath), "%s", fullPath);
         e->fileSize = (size_t)st.st_size;
     }
     closedir(dir);
