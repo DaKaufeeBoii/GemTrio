@@ -1,53 +1,183 @@
-# About `pokeemerald-expansion`
+# GemTrio — Native PC Port
 
-![Gif that shows debugging functionality that is unique to pokeemerald-expansion such as rerolling Trainer ID, Cheat Start, PC from Debug Menu, Debug PC Fill, Pokémon Sprite Visualizer, Debug Warp to Map, and Battle Debug Menu](https://github.com/user-attachments/assets/cf9dfbee-4c6b-4bca-8e0a-07f116ef891c) ![Gif that shows overworld functionality that is unique to pokeemerald-expansion such as indoor running, BW2 style map popups, overworld followers, DNA Splicers, Gen 1 style fishing, OW Item descriptions, Quick Run from Battle, Use Last Ball, Wild Double Battles, and Catch from EXP](https://github.com/user-attachments/assets/383af243-0904-4d41-bced-721492fbc48e) ![Gif that shows off a number of modern Pokémon battle mechanics happening in the pokeemerald-expansion engine: 2 vs 1 battles, modern Pokémon, items, moves, abilities, fully customizable opponents and partners, Trainer Slides, and generational gimmicks](https://github.com/user-attachments/assets/50c576bc-415e-4d66-a38f-ad712f3316be)
+<p align="center">
+  <img src="graphics/pokemon/rayquaza/anim_front.png" alt="GemTrio Logo" width="128" />
+  <br>
+  <b>An interconnected Pokémon journey spanning 16 Badges across Hoenn & Kanto, recompiled natively for PC.</b>
+  <br>
+  <sub>High-performance static recompilation • 16-Badge Level Caps • Gen 9 Battles • Modern QoL • Hot-Swappable Mod Engine</sub>
+</p>
 
-<!-- If you want to re-record or change these gifs, here are some notes that I used: https://files.catbox.moe/05001g.md -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Windows%20x64%20|%20Native%20PC-0078D6?style=flat-square&logo=windows" alt="Platform" />
+  <img src="https://img.shields.io/badge/Engine-EmeraldRecomp%20+%20pokeemerald--expansion-306998?style=flat-square" alt="Engine" />
+  <img src="https://img.shields.io/badge/Badges-16%20(Hoenn%20+%20Kanto)-FFD700?style=flat-square" alt="Badges" />
+  <img src="https://img.shields.io/badge/Battle%20Engine-Gen%209%20Mechanics-E3350D?style=flat-square" alt="Battle Engine" />
+  <img src="https://img.shields.io/badge/Modding-Hot--Swappable%20VFS-4CAF50?style=flat-square" alt="Modding" />
+</p>
 
-**`pokeemerald-expansion`** is a GBA ROM hack base that equips developers with a comprehensive toolkit for creating Pokémon ROM hacks. **`pokeemerald-expansion`** is built on top of [pret's `pokeemerald`](https://github.com/pret/pokeemerald) decompilation project. **It is not a playable Pokémon game on its own.**
+---
 
-# [Features](FEATURES.md)
+## 📖 Overview
 
-**`pokeemerald-expansion`** offers hundreds of features from various [core series Pokémon games](https://bulbapedia.bulbagarden.net/wiki/Core_series), along with popular quality-of-life enhancements designed to streamline development and improve the player experience. A full list of those features can be found in [`FEATURES.md`](FEATURES.md).
+**GemTrio** is a custom Pokémon experience that bridges **Hoenn and Kanto** into a single cohesive world with 16 gym badges, built upon the high-performance `pokeemerald-expansion` codebase and recompiled into a standalone 64-bit native PC executable via **Emerald Recomp**.
 
-# [Credits](CREDITS.md)
+By breaking free from GBA hardware constraints while preserving authentic mechanics, GemTrio delivers native 60 FPS performance, arbitrary resolutions including widescreen and ultrawide, zero emulation latency, and a built-in C-level dynamic modding system that allows hot-swapping assets, stats, and scripts without touching the game compiler.
 
- [![](https://img.shields.io/github/all-contributors/rh-hideout/pokeemerald-expansion/upcoming)](CREDITS.md)
+---
 
-If you use **`pokeemerald-expansion`**, please credit **RHH (Rom Hacking Hideout)**. Optionally, include the version number for clarity.
+## ✨ Key Features
+
+### ⚔️ Modern Battle Engine & Mechanics
+* **Physical / Special Split**: Every move is dynamically split based on modern core-series classifications.
+* **Fairy Typing & Gen 9 Type Chart**: Fully updated type matchups and resistances.
+* **Modern Movepools & Abilities**: Integrated modern expansion abilities, moves, and battle effects.
+
+### 🏆 16-Badge Strict Level Cap Progression
+To preserve challenge and prevent overleveling across both regions, the battle engine strictly enforces progression caps based on the player's total badge count (`src/battle_setup.c`):
+
+| Region | Badge # | Representative Gym | Level Cap |
+| :--- | :---: | :--- | :---: |
+| **Hoenn** | 1 | Stone Badge (Roxanne) | **Lv 15** |
+| | 2 | Knuckle Badge (Brawly) | **Lv 19** |
+| | 3 | Dynamo Badge (Wattson) | **Lv 24** |
+| | 4 | Heat Badge (Flannery) | **Lv 29** |
+| | 5 | Balance Badge (Norman) | **Lv 31** |
+| | 6 | Feather Badge (Winona) | **Lv 33** |
+| | 7 | Mind Badge (Tate & Liza) | **Lv 42** |
+| | 8 | Rain Badge (Wallace/Juan) | **Lv 46** |
+| **Kanto** | 9 | Boulder Badge (Brock) | **Lv 53** |
+| | 10 | Cascade Badge (Misty) | **Lv 56** |
+| | 11 | Thunder Badge (Lt. Surge) | **Lv 60** |
+| | 12 | Rainbow Badge (Erika) | **Lv 64** |
+| | 13 | Soul Badge (Koga/Janine) | **Lv 68** |
+| | 14 | Marsh Badge (Sabrina) | **Lv 73** |
+| | 15 | Volcano Badge (Blaine) | **Lv 78** |
+| | 16 | Earth Badge (Blue) | **Lv 85** |
+| **Postgame** | — | Champion & Battle Frontier | **Lv 100** |
+
+*Exp cap system smoothly redirects excess experience until the appropriate badge is earned.*
+
+### 🛠️ Modern Quality-of-Life (QoL)
+* **Reusable TMs**: Technical Machines are never consumed upon use.
+* **Gen 6+ Team Exp. Share**: Toggleable party-wide experience distribution.
+* **HM Field Move Freedom**: Pokémon can use Cut, Surf, Fly, Strength, Flash, Rock Smash, Waterfall, and Defog in the field as long as an eligible Pokémon is in your party—**without permanently occupying a moveset slot**.
+
+### 🌿 Living World & Overworld Immersion
+* **Day / Night System**: Dynamic lighting based on the real-time clock (RTC).
+* **Dynamic Overworld Palettes (DOWP)**: World tiles and entities naturally reflect current time and weather.
+* **Following Pokémon**: Your lead party member follows behind you in the overworld.
+* **Visible Overworld Encounters**: Wild Pokémon visibly spawn in grassy routes and caves.
+
+### 🖥️ Native PC Enhancements
+* **Widescreen & Ultrawide Display**: Support for Native 3:2, `16:9`, `21:9`, `32:9`, or `Fit to Window` mode (unveiling extra scenery and live NPCs at native pixel scale).
+* **Full Controller Support**: Direct plug-and-play for Xbox, PlayStation (DualShock 4 / DualSense), Nintendo Switch Pro, and standard XInput/DirectInput devices.
+* **Zero Input Delay**: Direct SDL2 windowing and native execution eliminate emulator buffer lag.
+
+---
+
+## 🧩 Dynamic Mod Support Architecture
+
+GemTrio features an external mod loader built into the C/C++ runtime layer (`src/mod_loader/`):
 
 ```
-Based off RHH's pokeemerald-expansion 1.17.2 https://github.com/rh-hideout/pokeemerald-expansion/
+gemtrio/
+├── mods/
+│   ├── sprites/         <-- Drop replacement .png files here
+│   ├── palettes/        <-- Drop replacement palette files here
+│   ├── data/            <-- Drop JSON data patches (base_stats.json, trainers, encounters)
+│   ├── sounds/          <-- Drop replacement audio and cry files
+│   └── README.md
 ```
 
-Please consider [crediting all contributors](CREDITS.md) involved in the project!
+### Mod Capabilities:
+1. **Asset Interception Hook (`LoadAsset_Override`)**:
+   Intercepts game asset requests at runtime. If an asset matching the path or hash exists inside `/mods/`, the game loads the external file dynamically without modifying or recompiling the game executable.
+2. **Virtual File System (VFS)**:
+   Scans the local `/mods/` directory on startup and constructs a fast FNV-1a hash table for near-instant path resolution.
+3. **JSON Runtime Data Patching (`cJSON`)**:
+   Modders can drop JSON files into `/mods/data/` (such as `base_stats.json`) to alter Pokémon base stats, typings, catch rates, abilities, and level-up moves on the fly.
+4. **GameShark & Static Memory Translation**:
+   Built-in translation layer mapping original GBA addresses (EWRAM `0x02000000`, IWRAM `0x03000000`, etc.) to the native host memory space, enabling external cheat files and runtime memory modification.
 
-# Choosing `pokeemerald` or **`pokeemerald-expansion`**
+---
 
-- **`pokeemerald-expansion`** supports multiplayer functionality with other games built on **`pokeemerald-expansion`**. It is not compatible with official Pokémon games.
-- If compatibility with official games is important, use [`pokeemerald`](https://github.com/pret/pokeemerald). Otherwise, we recommend using **`pokeemerald-expansion`**.
-- **`pokeemerald-expansion`** incorporates regular updates from `pokeemerald`, including bug fixes and documentation improvements.
+## 🚀 Getting Started
 
-# [Getting Started](INSTALL.md)
+### Prerequisites (For Running)
+* Windows 10 / 11 (64-bit)
+* Official Game Boy Advance BIOS file (`gba_bios.bin`)
 
-❗❗ **Important**: Do not use GitHub's "Download Zip" option as it will not include commit history. This is necessary if you want to update or merge other feature branches.
+### Quick Play
+1. Clone or download this repository:
+   ```bash
+   git clone https://github.com/DaKaufeeBoii/GemTrio.git
+   cd GemTrio
+   ```
+2. Double-click **`Play_GemTrio.bat`**.
+3. The launcher will automatically detect the pre-configured BIOS and ROM and boot the game natively!
 
-If you're new to git and GitHub, [Team Aqua's Asset Repo](https://github.com/Pawkkie/Team-Aquas-Asset-Repo/) has a [guide to forking and cloning the repository](https://github.com/Pawkkie/Team-Aquas-Asset-Repo/wiki/The-Basics-of-GitHub). Then you can follow one of the following guides:
+---
 
-## 📥 [Installing **`pokeemerald-expansion`**](INSTALL.md)
-## 🏗️ [Building **`pokeemerald-expansion`**](INSTALL.md#Building-pokeemerald-expansion)
-## 🚚 [Migrating from **`pokeemerald`**](INSTALL.md#Migrating-from-pokeemerald)
-## 🚀 [Updating **`pokeemerald-expansion`**](INSTALL.md#Updating-pokeemerald-expansion)
+## 🔨 Building From Source
 
-# [Documentation](https://rh-hideout.github.io/pokeemerald-expansion/)
+To compile the ROM and host tools from source code:
 
-For detailed documentation, visit the [pokeemerald-expansion documentation page](https://rh-hideout.github.io/pokeemerald-expansion/).
+### Requirements
+* [devkitPro](https://devkitpro.org/) with `devkitARM` (`arm-none-eabi-gcc`)
+* Python 3.10+ (with UTF-8 enabled)
+* GNU Make
 
-# [Contributions](CONTRIBUTING.md)
-If you are looking to [report a bug](CONTRIBUTING.md#Bug-Report), [open a pull request](CONTRIBUTING.md#Pull-Requests), or [request a feature](CONTRIBUTING.md#Feature-Request), our [`CONTRIBUTING.md`](CONTRIBUTING.md) has guides for each.
+### Build Steps
+```bash
+# Set environment variables for devkitARM
+$env:DEVKITPRO = "C:\devkitPro"
+$env:DEVKITARM = "C:\devkitPro\devkitARM"
+$env:PATH = "C:\devkitPro\devkitARM\bin;" + $env:PATH
+$env:PYTHONUTF8 = "1"
 
-# [Community](https://discord.gg/6CzjAG6GZk)
+# Compile host tools and the 32MB ROM in parallel
+make -j8
+```
 
-[![](https://dcbadge.limes.pink/api/server/6CzjAG6GZk)](https://discord.gg/6CzjAG6GZk)
+The build outputs:
+* `pokeemerald.gba` — Complete 32 MB GBA ROM cart image
+* `pokeemerald.elf` — Full ELF executable with symbol maps
+* `pokeemerald.map` — Linker symbol and address map
 
-Our community uses the [ROM Hacking Hideout (RHH) Discord server](https://discord.gg/6CzjAG6GZk) to communicate and organize. Most of our discussions take place there, and we welcome anybody to join us!
+Running `Play_GemTrio.bat` automatically syncs the newly compiled ROM to the PC recompiler runner.
+
+---
+
+## 📁 Repository Structure
+
+```
+GemTrio/
+├── Play_GemTrio.bat            # One-click native PC launcher
+├── Makefile                    # Multi-core build pipeline
+├── include/                    # Engine headers and config toggles
+│   ├── config/                 # Feature configuration (battle, caps, item, overworld)
+│   └── constants/              # Game constants and badge definitions
+├── src/                        # Game source code
+│   ├── battle_setup.c          # 16-badge level cap enforcement hooks
+│   └── mod_loader/             # Dynamic C mod interceptor, VFS, cJSON, and memory map
+├── emerald_recomp_bin/         # 64-bit Emerald Recomp PC runtime & overlay toolchain
+├── mods/                       # External hot-swappable mod directory
+├── sound/                      # Sound drivers and music data
+└── tools/                      # Native asset compilers (gbagfx, compresSmol, scaninc, etc.)
+```
+
+---
+
+## 📜 Credits & Acknowledgments
+
+* **Rom Hacking Hideout (RHH)** — For the outstanding [`pokeemerald-expansion`](https://github.com/rh-hideout/pokeemerald-expansion) base.
+* **pret** — For the foundational [`pokeemerald`](https://github.com/pret/pokeemerald) disassembly project.
+* **mstan & R.A.I.D. Community** — For [`EmeraldRecomp`](https://github.com/mstan/EmeraldRecomp) and the `gbarecomp` static recompilation framework.
+* **Dave Gamble & Contributors** — For the lightweight [`cJSON`](https://github.com/DaveGamble/cJSON) parser.
+
+---
+
+## ⚖️ Disclaimer
+
+*GemTrio is an educational, non-commercial fan-made project developed under fair use. Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc., and Game Freak. This repository does not distribute copyrighted ROMs or proprietary Nintendo BIOS files.*
