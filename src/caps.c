@@ -101,6 +101,18 @@ u32 GetCurrentEVCap(void)
         {FLAG_IS_CHAMPION, MAX_TOTAL_EVS},
     };
 
+    if (GEMTRIO_EV_CAP_SCALES_WITH_BADGES)
+    {
+        // GemTrio: spread the EV cap over all 16 Badges instead of the 8 the
+        // Hoenn flag list above knows about. 1/17 at zero Badges, full at 16.
+        u32 badges = GemTrio_GetBadgeCount();
+
+        if (badges >= 16)
+            return MAX_TOTAL_EVS;
+
+        return (MAX_TOTAL_EVS * (badges + 1)) / 17;
+    }
+
     if (B_EV_CAP_TYPE == EV_CAP_FLAG_LIST)
     {
         for (u32 evCap = 0; evCap < ARRAY_COUNT(sEvCapFlagMap); evCap++)

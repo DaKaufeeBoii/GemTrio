@@ -56,12 +56,26 @@ To preserve challenge and prevent overleveling across both regions, the battle e
 | | 16 | Earth Badge (Blue) | **Lv 85** |
 | **Postgame** | — | Champion & Battle Frontier | **Lv 100** |
 
-*Exp cap system smoothly redirects excess experience until the appropriate badge is earned.*
+*EXP gain stops at the cap until the next Badge is earned; the numbers live in `src/battle_setup.c` and are announced in-game after every Badge.*
+
+> ⚠️ **Region status:** the current ROM contains the **Hoenn** campaign only.
+> The eight Kanto Gyms, their flags (`FLAG_KANTO_BADGE01_GET`…) and the cap
+> values for Badges 9-16 are all implemented, but the Kanto maps are filtered
+> out of the Emerald build by `tools/mapjson`. See [`STATUS.md`](STATUS.md) for
+> the exact steps to merge the regions.
 
 ### 🛠️ Modern Quality-of-Life (QoL)
 * **Reusable TMs**: Technical Machines are never consumed upon use.
 * **Gen 6+ Team Exp. Share**: Toggleable party-wide experience distribution.
 * **HM Field Move Freedom**: Pokémon can use Cut, Surf, Fly, Strength, Flash, Rock Smash, Waterfall, and Defog in the field as long as an eligible Pokémon is in your party—**without permanently occupying a moveset slot**.
+* **Level Cap feedback**: Earning a Badge announces the new party Level Cap in-game (`data/scripts/gemtrio.inc`) and applies it immediately instead of at the next battle.
+* **No silent de-leveling**: the cap is enforced through EXP only by default—traded or gifted Pokémon above the cap keep their levels (`GEMTRIO_STRICT_LEVEL_CLAMP` in `include/config/gemtrio.h`).
+* **Battle info at a glance**: target type indicators and move effectiveness are always shown while choosing a move.
+* **PC-friendly defaults**: new saves start on Fast text speed.
+* **Evolution items from the Bag**: Electirizer-class items are usable without a held-item trade.
+* **Fewer interruptions**: no location banner when re-entering the same map section, plus the reusable-Repel menu.
+
+➡️ **Every QoL feature, with how to see it in game, is documented in [`docs/QOL.md`](docs/QOL.md).**
 
 ### 🌿 Living World & Overworld Immersion
 * **Day / Night System**: Dynamic lighting based on the real-time clock (RTC).
@@ -69,10 +83,21 @@ To preserve challenge and prevent overleveling across both regions, the battle e
 * **Following Pokémon**: Your lead party member follows behind you in the overworld.
 * **Visible Overworld Encounters**: Wild Pokémon visibly spawn in grassy routes and caves.
 
-### 🖥️ Native PC Enhancements
-* **Widescreen & Ultrawide Display**: Support for Native 3:2, `16:9`, `21:9`, `32:9`, or `Fit to Window` mode (unveiling extra scenery and live NPCs at native pixel scale).
-* **Full Controller Support**: Direct plug-and-play for Xbox, PlayStation (DualShock 4 / DualSense), Nintendo Switch Pro, and standard XInput/DirectInput devices.
-* **Zero Input Delay**: Direct SDL2 windowing and native execution eliminate emulator buffer lag.
+### 🖥️ Native PC Port Architecture & Features
+* **Ship of Harkinian-Style Launcher (`GemTrio.exe`)**:
+  * Clean legal asset extraction model: requires the player to provide an official *Pokemon - Emerald Version (USA)* ROM (`f3ae0881...`) once for authentic asset extraction.
+  * Builds the enhanced GemTrio build **once** into `game/gemtrio.gba`, generating a verified build manifest (`game/build_info.json`).
+* **Dedicated Save File Management (`saves/`)**:
+  * Saves are stored strictly in `saves/gemtrio.sav` (isolated from binaries and working trees).
+  * Save states live in `saves/states/`.
+  * **Automatic Session Backups**: Automatically takes timestamped snapshots in `saves/backups/` before and after every play session. You never lose a save to crashes or corruption.
+  * Built-in save manager buttons in the launcher to open the folder, create instant manual backups, or restore past snapshots.
+* **Native SDL2 PC Runner**:
+  * Hardware-accelerated 60 FPS gameplay with zero emulation buffer lag.
+  * Configurable window scaling (2x, 3x, 4x, 5x) or borderless Fullscreen (`F11`).
+  * Direct plug-and-play for Xbox, PlayStation (DualShock / DualSense), Nintendo Switch Pro, and standard controllers.
+  * Fast-forward (hold `Left Shift` or controller RT).
+  * Quick save state (`F5`) and quick load state (`F8`).
 
 ---
 
@@ -109,13 +134,11 @@ gemtrio/
 * Official Game Boy Advance BIOS file (`gba_bios.bin`)
 
 ### Quick Play
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/DaKaufeeBoii/GemTrio.git
-   cd GemTrio
-   ```
-2. Double-click **`Play_GemTrio.bat`**.
-3. The launcher will automatically detect the pre-configured BIOS and ROM and boot the game natively!
+1. Double-click **`Play_GemTrio.bat`** (or run **`GemTrio.exe`**).
+2. On first launch, the wizard will ask you to select your official *Pokemon - Emerald Version (USA)* ROM for authentic asset extraction (just like *Ship of Harkinian* / *SM64-PC*).
+   *(It automatically detects `..\roms\pokemon-emerald.gba` if present!)*
+3. Click **EXTRACT ASSETS & BUILD GEMTRIO**. This builds the enhanced game once into `game/gemtrio.gba`.
+4. Click **PLAY GEMTRIO** to start! Your progress is continuously and safely backed up to `saves/`.
 
 ---
 
@@ -153,17 +176,24 @@ Running `Play_GemTrio.bat` automatically syncs the newly compiled ROM to the PC 
 
 ```
 GemTrio/
-├── Play_GemTrio.bat            # One-click native PC launcher
+├── GemTrio.exe                 # Native Windows GUI launcher (SoH-style asset extractor & hub)
+├── Play_GemTrio.bat            # One-click launcher script
 ├── Makefile                    # Multi-core build pipeline
+├── game/                       # Extracted & built game output
+│   ├── gemtrio.gba             # Enhanced GemTrio build with all custom features
+│   └── build_info.json         # Asset extraction manifest & SHA-1 records
+├── saves/                      # Dedicated save storage
+│   ├── gemtrio.sav             # Active battery save
+│   ├── backups/                # Automated historical timestamped backups
+│   └── states/                 # Quick save states (F5/F8)
+├── bin/                        # Portable native SDL2 runner & BIOS
+│   ├── gemtrio-runner.exe      # Native PC runner
+│   └── gba_bios.bin            # GBA BIOS
 ├── include/                    # Engine headers and config toggles
 │   ├── config/                 # Feature configuration (battle, caps, item, overworld)
 │   └── constants/              # Game constants and badge definitions
 ├── src/                        # Game source code
-│   ├── battle_setup.c          # 16-badge level cap enforcement hooks
-│   └── mod_loader/             # Dynamic C mod interceptor, VFS, cJSON, and memory map
-├── emerald_recomp_bin/         # 64-bit Emerald Recomp PC runtime & overlay toolchain
-├── mods/                       # External hot-swappable mod directory
-├── sound/                      # Sound drivers and music data
+│   └── battle_setup.c          # 16-badge level cap enforcement hooks
 └── tools/                      # Native asset compilers (gbagfx, compresSmol, scaninc, etc.)
 ```
 

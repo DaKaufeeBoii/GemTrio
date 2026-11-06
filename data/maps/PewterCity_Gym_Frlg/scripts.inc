@@ -12,7 +12,8 @@ PewterCity_Gym_EventScript_Brock::
 PewterCity_Gym_EventScript_DefeatedBrock::
 	famechecker FAMECHECKER_BROCK, 1
 	setflag FLAG_DEFEATED_BROCK
-	setflag FLAG_BADGE01_GET
+	setflag FLAG_KANTO_BADGE01_GET
+	call GemTrio_EventScript_AnnounceLevelCap
 	setvar VAR_MAP_SCENE_PEWTER_CITY, 1
 	setflag FLAG_HIDE_PEWTER_CITY_GYM_GUIDE
 	clearflag FLAG_HIDE_PEWTER_CITY_RUNNING_SHOES_GUY

@@ -9,6 +9,7 @@ LilycoveCity_Harbor_OnTransition:
 LilycoveCity_Harbor_EventScript_FerryAttendant::
 	lock
 	faceplayer
+	goto_if_set FLAG_BADGE08_GET, LilycoveCity_Harbor_EventScript_CheckKantoFerry
 	goto_if_unset FLAG_SYS_GAME_CLEAR, LilycoveCity_Harbor_EventScript_FerryUnavailable
 	call LilycoveCity_Harbor_EventScript_GetEonTicketState
 	call LilycoveCity_Harbor_EventScript_GetAuroraTicketState
@@ -96,7 +97,22 @@ LilycoveCity_Harbor_EventScript_GoToBattleFrontier::
 	release
 	end
 
-LilycoveCity_Harbor_EventScript_GetEonTicketState::
+LilycoveCity_Harbor_EventScript_CheckKantoFerry::
+	msgbox GemTrio_Text_FerryToKantoPrompt, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, LilycoveCity_Harbor_EventScript_BoardForKanto
+	goto_if_unset FLAG_SYS_GAME_CLEAR, LilycoveCity_Harbor_EventScript_FerryUnavailable
+	call LilycoveCity_Harbor_EventScript_GetEonTicketState
+	goto LilycoveCity_Harbor_EventScript_NoFirstTimeEventTickets
+
+LilycoveCity_Harbor_EventScript_BoardForKanto::
+	msgbox GemTrio_Text_FerryToKantoDepart, MSGBOX_DEFAULT
+	closemessage
+	call LilycoveCity_Harbor_EventScript_BoardFerry
+	warp MAP_VERMILION_CITY, 15, 20
+	waitstate
+	release
+	end
+
 	setvar VAR_TEMP_E, 0
 	goto_if_unset FLAG_ENABLE_SHIP_SOUTHERN_ISLAND, Common_EventScript_NopReturn
 	checkitem ITEM_EON_TICKET

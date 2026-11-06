@@ -1,5 +1,14 @@
 # GemTrio Modding Guide (Native PC Port)
 
+> **Status: experimental / not yet linked.**
+> The C mod loader in `src/mod_loader/` is complete and compiles, but it is
+> excluded from the GBA build and `EmeraldRecomp.exe` (prebuilt) never calls
+> `VFS_Init()` or `LoadAsset_Override()`. Files dropped into this folder do
+> **not** affect the running game yet. The mods that *do* work today are the
+> recompiler packages under `emerald_recomp_bin/mods/packages/**` toggled from
+> the launcher's **Mods** tab. See `STATUS.md` for the two realistic paths to
+> make this folder live.
+
 The GemTrio native PC port allows loading user-created modifications dynamically at runtime from this `mods/` directory without requiring any recompilation of the executable.
 
 ---

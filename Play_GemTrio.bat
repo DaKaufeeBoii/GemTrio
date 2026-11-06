@@ -1,31 +1,10 @@
 @echo off
 title GemTrio - Native PC Port
-cd /d "%~dp0emerald_recomp_bin"
+cd /d "%~dp0"
 
-if not exist "gba_bios.bin" (
-    if exist "..\..\gba_bios\gba_bios.bin" (
-        copy "..\..\gba_bios\gba_bios.bin" "gba_bios.bin" >nul
-    )
+if exist "GemTrio.exe" (
+    start "" "GemTrio.exe"
+) else (
+    echo [ERROR] GemTrio.exe launcher not found.
+    pause
 )
-
-if not exist "bios.cfg" (
-    echo %cd%\gba_bios.bin> bios.cfg
-)
-
-if exist "..\pokeemerald.gba" (
-    copy /y "..\pokeemerald.gba" "pokeemerald.gba" >nul
-    copy /y "..\pokeemerald.gba" "gemtrio.gba" >nul
-) else if exist "..\build\emerald\pokeemerald.gba" (
-    copy /y "..\build\emerald\pokeemerald.gba" "pokeemerald.gba" >nul
-    copy /y "..\build\emerald\pokeemerald.gba" "gemtrio.gba" >nul
-)
-
-if not exist "rom.cfg" (
-    echo %cd%\pokeemerald.gba> rom.cfg
-)
-
-echo ========================================================
-echo             GemTrio - Native PC Port
-echo ========================================================
-echo Starting Emerald Recomp native engine...
-start "" "EmeraldRecomp.exe"

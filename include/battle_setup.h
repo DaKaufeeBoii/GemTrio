@@ -148,5 +148,6 @@ void CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Traine
 u8 GemTrio_GetBadgeCount(void);
 u8 GemTrio_GetLevelCap(void);
 void GemTrio_EnforceLevelCaps(void);
+void GemTrio_RefreshLevelCap(void);
 
 #endif // GUARD_BATTLE_SETUP_H

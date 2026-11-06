@@ -69,3 +69,12 @@ __pycache__
 *.zip
 emerald_recomp_bin/
 !Play_GemTrio.bat
+!GemTrio.exe
+bin/*.bin
+bin/*.gba
+saves/
+game/
+*.sav
+*.bios
+
+

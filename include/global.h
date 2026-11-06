@@ -4,6 +4,7 @@
 #include <string.h>
 #include <limits.h>
 #include "config/general.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
+#include "config/gemtrio.h" // GemTrio-specific tuning knobs.
 #include "gba/gba.h"
 #include "assertf.h"
 #include "gametypes.h"

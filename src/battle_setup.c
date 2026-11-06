@@ -388,27 +388,30 @@ void BattleSetup_StartMultiBattle(void)
 
 
 // ── GemTrio: 16-Badge Level Cap Table & Enforcement ─────────────────────────
-// Badges 0-8: Hoenn (Roxanne -> Juan/Wallace)
-// Badges 9-16: Kanto (Brock -> Giovanni / All Badges)
+// The index is the number of Badges the player owns, so the table entry is the
+// cap the player is playing under *after* earning that many Badges.
+// Badges 1-8: Hoenn (Roxanne -> Juan/Wallace)
+// Badges 9-16: Kanto (Brock -> Blue)
+// These values are mirrored in README.md and docs/QOL.md; keep them in sync.
 static const u8 sGemTrioBadgeLevelCaps[17] =
 {
-    15, // 0 Badges  (Early Game Cap)
-    20, // 1 Badge   (Roxanne - Stone)
-    25, // 2 Badges  (Brawly - Knuckle)
-    30, // 3 Badges  (Wattson - Dynamo)
-    35, // 4 Badges  (Flannery - Heat)
-    40, // 5 Badges  (Norman - Balance)
-    45, // 6 Badges  (Winona - Feather)
-    50, // 7 Badges  (Tate & Liza - Mind)
-    55, // 8 Badges  (Juan / Wallace - Rain)
-    60, // 9 Badges  (Brock - Boulder)
-    65, // 10 Badges (Misty - Cascade)
-    70, // 11 Badges (Lt. Surge - Thunder)
-    75, // 12 Badges (Erika - Rainbow)
-    80, // 13 Badges (Koga - Soul)
-    85, // 14 Badges (Sabrina - Marsh)
-    90, // 15 Badges (Blaine - Volcano)
-    100 // 16 Badges (Giovanni - Earth / All Badges Uncapped)
+    10, // 0 Badges  (Pre-Roxanne, early game)
+    15, // 1 Badge   (Roxanne - Stone)
+    19, // 2 Badges  (Brawly - Knuckle)
+    24, // 3 Badges  (Wattson - Dynamo)
+    29, // 4 Badges  (Flannery - Heat)
+    31, // 5 Badges  (Norman - Balance)
+    33, // 6 Badges  (Winona - Feather)
+    42, // 7 Badges  (Tate & Liza - Mind)
+    46, // 8 Badges  (Juan / Wallace - Rain)
+    53, // 9 Badges  (Brock - Boulder)
+    56, // 10 Badges (Misty - Cascade)
+    60, // 11 Badges (Lt. Surge - Thunder)
+    64, // 12 Badges (Erika - Rainbow)
+    68, // 13 Badges (Koga - Soul)
+    73, // 14 Badges (Sabrina - Marsh)
+    78, // 15 Badges (Blaine - Volcano)
+    85, // 16 Badges (Blue - Earth)
 };
 
 u8 GemTrio_GetBadgeCount(void)
@@ -435,21 +438,34 @@ u8 GemTrio_GetBadgeCount(void)
 
 u8 GemTrio_GetLevelCap(void)
 {
+#if GEMTRIO_LEVEL_CAPS_ENABLED
     u8 badges = GemTrio_GetBadgeCount();
+
+    // The postgame cap only unlocks with all 16 Badges plus a cleared game,
+    // so clearing the Hoenn league at 8 Badges does not jump the cap to 100.
+    if (badges >= ARRAY_COUNT(sGemTrioBadgeLevelCaps) - 1 && FlagGet(FLAG_SYS_GAME_CLEAR))
+        return GEMTRIO_POSTGAME_LEVEL_CAP;
+
     if (badges >= ARRAY_COUNT(sGemTrioBadgeLevelCaps))
         badges = ARRAY_COUNT(sGemTrioBadgeLevelCaps) - 1;
+
     return sGemTrioBadgeLevelCaps[badges];
+#else
+    return MAX_LEVEL;
+#endif
 }
 
 void GemTrio_EnforceLevelCaps(void)
 {
     u8 cap = GemTrio_GetLevelCap();
-    u8 i;
 
     // Keep the runtime VAR_LEVEL_CAP in sync so EXP capping (caps.h) is automatic
     VarSet(VAR_LEVEL_CAP, cap);
 
-    // Strict cap enforcement: clamp party Pokemon levels if they exceed current badge cap
+#if GEMTRIO_STRICT_LEVEL_CLAMP
+    // Optional strict mode: clamp party Pokemon levels if they exceed the cap.
+    u8 i;
+
     for (i = 0; i < PARTY_SIZE; i++)
     {
         struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][i];
@@ -462,6 +478,19 @@ void GemTrio_EnforceLevelCaps(void)
             CalculateMonStats(mon);
         }
     }
+#endif
+}
+
+// GemTrio: refresh the cap immediately (instead of waiting for the next battle)
+// and hand it back to the script engine in VAR_0x8006 so a Badge script can
+// announce it. Called through the `GemTrio_RefreshLevelCap` script special.
+void GemTrio_RefreshLevelCap(void)
+{
+    u8 cap = GemTrio_GetLevelCap();
+
+    VarSet(VAR_LEVEL_CAP, cap);
+    // A zero tells the script there is nothing to announce.
+    gSpecialVar_0x8006 = GEMTRIO_LEVEL_CAP_NOTIFY ? cap : 0;
 }
 
 void BattleSetup_StartBattlePikeWildBattle(void)

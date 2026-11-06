@@ -49,10 +49,20 @@ VermilionCity_EventScript_OldMan1SSAnneLeft::
 VermilionCity_EventScript_FerrySailor::
 	lock
 	faceplayer
-	goto_if_eq VAR_MAP_SCENE_VERMILION_CITY, 3, VermilionCity_EventScript_CheckSeagallopPresent
-	msgbox VermilionCity_Text_WelcomeToTheSSAnne
+	msgbox GemTrio_Text_FerryToHoennPrompt, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, VermilionCity_EventScript_BoardForHoenn
+	msgbox GemTrio_Text_FerryToHoennDeclined, MSGBOX_DEFAULT
 	release
 	end
+
+VermilionCity_EventScript_BoardForHoenn::
+	msgbox GemTrio_Text_FerryToHoennDepart, MSGBOX_DEFAULT
+	closemessage
+	warp MAP_LILYCOVE_CITY_HARBOR, 8, 11
+	waitstate
+	release
+	end
+
 
 VermilionCity_EventScript_CheckHasMysticTicket::
 	goto_if_unset FLAG_ENABLE_SHIP_NAVEL_ROCK, EventScript_SetResultFalse
